@@ -1,2 +1,2 @@
-# CERKA-Elektronikus-napl-
+# CERKA Elektronikus napló
 Egy KRETA alternatíva iskolák számára
