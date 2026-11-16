@@ -1,0 +1,48 @@
+11/b mappa:
+osztály
+Tulkán Csanád.csv:
+nyelv;
+matek+"5";
+töri;
+angol;
+irodalom;5,3,5,3,5,5
+
+-> osztályátlag
+-> ember összátl
+-> irodalom ossz
+
+milyen adatot visz fel ->
+osztaly || ember || jegy || átlag || ember keresése 
+
+
+osztaly ->
+mi az osztaly neve ...
+ki az osztályfőnök -> ez is az osztaly class 
+tan 1
+tan 2 
+.
+.
+.
+
+file system -> osztaly mappa tanulo csv fileokkal 
+
+osztaly class 2 paraméter: osztalyfonok és tanulok a tanulok az egy lista
+
+tanulo class:
+azonosito;nev
+irodalom;
+nyelv;
+matek;
+töri;
+angol;
+
+
+tcs
+i
+ny
+rr
+i
+ny
+
+12b file
+nev;tantargy;jegyek
