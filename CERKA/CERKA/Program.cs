@@ -1,4 +1,5 @@
-﻿string bejelentkezesfej = "Username/Password/Privileges\n" + "sysadmin/Menojelszo21/Admin\n";
+﻿string hashedAdminPassword = PasswordEncryption.HashPassword("Menojelszo21");
+string bejelentkezesfej = "Username|Password|Privileges\n" + $"sysadmin|{hashedAdminPassword}|Admin\n";
 if (!File.Exists("bejelentkezes.txt"))
 {
     File.WriteAllText("bejelentkezes.txt", bejelentkezesfej);
@@ -22,7 +23,7 @@ foreach (string sor in sorok.Skip(1))
         continue;
     }
 
-    string[] reszek = sor.Split("/");
+    string[] reszek = sor.Split("|");
     if (reszek.Length == 3 && reszek[0] == username)
     {
         talalt = reszek;
@@ -43,7 +44,7 @@ else
     byte muvelet = 1;
     for (int i = 1; i <= 3; i++)
     {
-        if (talalt[1] == jelszo)
+        if (PasswordEncryption.VerifyPassword(jelszo, talalt[1]))
         {
             bejelentkezett = true;
             break;
@@ -59,6 +60,6 @@ else
 
     if (bejelentkezett)
     {
-        Console.WriteLine("Bejeéemtlezés sikeres");
+        Console.WriteLine("Bejelentkezés sikeres");
     }
 }
