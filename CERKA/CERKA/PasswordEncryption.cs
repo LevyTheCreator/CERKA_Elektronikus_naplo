@@ -1,4 +1,5 @@
-﻿using BCrypt.Net;
+﻿using System;
+using BCrypt.Net;
 
 public static class PasswordEncryption
 {

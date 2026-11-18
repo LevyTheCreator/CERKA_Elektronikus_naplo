@@ -1,4 +1,6 @@
-﻿string hashedAdminPassword = PasswordEncryption.HashPassword("Menojelszo21");
+﻿using System;
+
+string hashedAdminPassword = PasswordEncryption.HashPassword("Menojelszo21");
 string bejelentkezesfej = "Username|Password|Privileges\n" + $"sysadmin|{hashedAdminPassword}|Admin\n";
 if (!File.Exists("bejelentkezes.txt"))
 {
