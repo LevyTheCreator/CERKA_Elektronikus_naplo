@@ -33,6 +33,8 @@ foreach (string sor in sorok.Skip(1))
     }
 }
 
+string privilege = null
+
 if (talalt == null)
 {
     Console.WriteLine("Nincs ilyen felhasználó!");
@@ -49,6 +51,7 @@ else
         if (PasswordEncryption.VerifyPassword(jelszo, talalt[1]))
         {
             bejelentkezett = true;
+            privilege = talalt[2];
             break;
         }
 
@@ -65,3 +68,41 @@ else
         Console.WriteLine("Bejelentkezés sikeres");
     }
 }
+// to be modified
+while (true)
+{
+    if (privilege.ToLower == "admin")
+    { 
+        Console.WriteLine("0. Kilépés || 1. Hozzáadás || 2. Lékérés || 3. Módosítás");
+        int input = int.Parse(Console.ReadLine());
+
+        if (input == 1)
+        {
+            Console.WriteLine("0. Visszalépés || 1. Osztály || 2. Diák");
+            int input1 = int.Parse(Console.ReadLine());
+
+            if ( input1 == 1)
+            {
+                Console.Write("Osztály neve: ")
+                string className = Console.ReadLine();
+                
+                Console.Write("Osztály osztályfőnöke: ");
+                string formTeacher = Console.ReadLine();
+
+                Console.Write("Szeretne most diákot is hozzáadni?: ");
+                string addStudent = Console.ReadLine();
+
+                List<Student> students = null;
+                if (addStudent.ToLower() == "nem")
+                {
+                    students = new List<Student>(); 
+                } 
+                // else not complete
+
+                SchoolClass(className, formTeacher, students)
+            }
+           
+        }
+    }
+}
+// ---------------
