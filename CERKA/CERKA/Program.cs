@@ -2,10 +2,10 @@
 
 string hashedAdminPassword = PasswordEncryption.HashPassword("Menojelszo21");
 string bejelentkezesfej = "Username|Password|Privileges\n" + $"sysadmin|{hashedAdminPassword}|Admin\n";
-if (!File.Exists("bejelentkezes.txt"))
+if (!File.Exists("bejelentkezes.csv"))
 {
-    File.WriteAllText("bejelentkezes.txt", bejelentkezesfej);
-    File.SetAttributes("bejelentkezes.txt", FileAttributes.Hidden);
+    File.WriteAllText("bejelentkezes.csv", bejelentkezesfej);
+    File.SetAttributes("bejelentkezes.csv", FileAttributes.Hidden);
 }
 
 
@@ -14,7 +14,7 @@ Console.WriteLine("-----------------");
 Console.Write("Felhasználónév: ");
 string username = Console.ReadLine();
 
-string[] sorok = File.ReadAllLines("bejelentkezes.txt");
+string[] sorok = File.ReadAllLines("bejelentkezes.csv");
 
 string[] talalt = null;
 
@@ -33,7 +33,7 @@ foreach (string sor in sorok.Skip(1))
     }
 }
 
-string privilege = null
+string privilege = "user";
 
 if (talalt == null)
 {
@@ -71,9 +71,9 @@ else
 // to be modified
 while (true)
 {
-    if (privilege.ToLower == "admin")
+    if (privilege.ToLower() == "admin")
     { 
-        Console.WriteLine("0. Kilépés || 1. Hozzáadás || 2. Lékérés || 3. Módosítás");
+        Console.WriteLine("0. Kilépés || 1. Hozzáadás || 2. Lékérés || 3. Módosítás ");
         int input = int.Parse(Console.ReadLine());
 
         if (input == 1)
@@ -83,7 +83,7 @@ while (true)
 
             if ( input1 == 1)
             {
-                Console.Write("Osztály neve: ")
+                Console.Write("Osztály neve: ");
                 string className = Console.ReadLine();
                 
                 Console.Write("Osztály osztályfőnöke: ");
