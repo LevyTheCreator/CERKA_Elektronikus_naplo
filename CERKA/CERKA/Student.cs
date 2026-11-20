@@ -2,14 +2,24 @@
 
 public class Student
 {
-    private string Id { get; set; }
-    private string Name { get; set; }
-    private string Grades { get; set; } 
+    public string Id { get; set; }
+    public string Name { get; set; }
+    public string Math { get; set; }
+    public string Litrature { get; set; }
+    public string History { get; set; }
+    public string English { get; set; }
+    public string Grammer { get; set; }
 
-    public Student(string id, string name, string grades)
+
+
+    public Student(string id, string name, string math, string litrature, string history, string english, string grammer)
     {
         Id = id;
         Name = name;
-        Grades = grades;
+        Math = math;
+        Litrature = litrature;
+        History = history;
+        English = english;
+        Grammer = grammer;
     }
 }
