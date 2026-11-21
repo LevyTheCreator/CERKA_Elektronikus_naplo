@@ -10,9 +10,15 @@ public class Student
     public string English { get; set; }
     public string Grammer { get; set; }
 
-
-
-    public Student(string id, string name, string math, string litrature, string history, string english, string grammer)
+    public Student(
+        string id,
+        string name,
+        string math,
+        string litrature,
+        string history,
+        string english,
+        string grammer
+    )
     {
         Id = id;
         Name = name;

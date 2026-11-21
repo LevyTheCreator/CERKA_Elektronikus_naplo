@@ -1,8 +1,154 @@
 ﻿using System;
 using System.ComponentModel;
 
+void Add()
+{
+    Console.WriteLine("0. Visszalépés || 1. Osztály || 2. Diák");
+
+    int choice;
+    string input;
+    do
+    {
+        Console.Write("Válassz (0-2): ");
+        input = Console.ReadLine();
+
+    } while (!int.TryParse(input, out choice) || choice < 0 || choice > 2);
+
+    switch (choice)
+    {
+        case 1:
+
+            Console.Write("Osztály neve: ");
+            string className = Console.ReadLine();
+
+            Console.Write("Osztály osztályfőnöke: ");
+            string formTeacher = Console.ReadLine();
+
+            Console.Write("Szeretne most diákot is hozzáadni?(0 - nem | 1 - igen): ");
+            int addStudent = int.Parse(Console.ReadLine());
+
+            switch(addStudent)
+            {
+                case 0:
+
+                    List<Student> students = new List<Student>();
+
+                    SchoolClass schoolClass = new SchoolClass(className, formTeacher, students);
+
+                    Directory.CreateDirectory($"Osztalyok/{className}");
+
+                    break;
+
+                case 1:
+
+                    Console.Write("Diákok száma: ");
+                    int studentAmount = int.Parse(Console.ReadLine());
+
+                    students = new List<Student>();
+
+                    for (int i = 0; i < studentAmount; i++)
+                    {
+                        Console.Write($"Diák {i + 1} neve: ");
+                        string studentName = Console.ReadLine();
+                        Console.Write($"Diák {i + 1} azonosítója: ");
+                        string studentId = Console.ReadLine();
+
+                        Student student = new Student(
+                            studentId,
+                            studentName,
+                            "N/A",
+                            "N/A",
+                            "N/A",
+                            "N/A",
+                            "N/A"
+                        );
+                        students.Add(student);
+                    }
+
+                    schoolClass = new SchoolClass(className, formTeacher, students);
+
+                    Directory.CreateDirectory($"Osztalyok/{className}");
+
+                    foreach (Student s in students)
+                    {
+                        File.WriteAllText(
+                            $"Osztalyok/{className}/{s.Name}.txt",
+                            $"Név: {s.Name}\nAzonosító: {s.Id}\n"
+                                + $"Jegyek:\n"
+                                + $"Matek: {s.Math}\n"
+                                + $"Irodalom: {s.Litrature}\n"
+                                + $"Történelem: {s.History}\n"
+                                + $"Angol: {s.English}\n"
+                                + $"Nyelvtan: {s.Grammer}"
+                        );
+                    }
+                    break;
+            }       
+            break;
+
+        case 2:
+
+            Console.Write("Melyik osztály: ");
+            string whichClass = Console.ReadLine();
+
+            Console.Write("Diákok száma: ");
+            int amountOfStudents = int.Parse(Console.ReadLine());
+
+            if (Directory.Exists($"Osztalyok/{whichClass}"))
+            {
+                List<Student> students = new List<Student>();
+
+                for (int i = 0; i < amountOfStudents; i++)
+                {
+                    Console.Write($"Diák {i + 1} neve: ");
+                    string studentName = Console.ReadLine();
+                    Console.Write($"Diák {i + 1} azonosítója: ");
+                    string studentId = Console.ReadLine();
+
+                    Student student = new Student(
+                        studentId,
+                        studentName,
+                        "N/A",
+                        "N/A",
+                        "N/A",
+                        "N/A",
+                        "N/A"
+                    );
+                    students.Add(student);
+                }
+
+                foreach (Student s in students)
+                {
+                    File.WriteAllText(
+                        $"Osztalyok/{whichClass}/{s.Name}.txt",
+                        $"Név: {s.Name}\nAzonosító: {s.Id}\n"
+                            + $"Jegyek:\n"
+                            + $"Matek: {s.Math}\n"
+                            + $"Irodalom: {s.Litrature}\n"
+                            + $"Történelem: {s.History}\n"
+                            + $"Angol: {s.English}\n"
+                            + $"Nyelvtan: {s.Grammer}"
+                    );
+                }
+            }
+            break;
+    }
+}
+
+// Itt csinald meg a lekérést. - Levi
+void retrieve()
+{
+
+}
+
+
+
+//------------------------------------------------------------------------------
+
+
 string hashedAdminPassword = PasswordEncryption.HashPassword("Menojelszo21");
-string bejelentkezesfej = "Username|Password|Privileges\n" + $"sysadmin|{hashedAdminPassword}|Admin\n";
+string bejelentkezesfej =
+    "Username;Password;Privileges\n" + $"sysadmin;{hashedAdminPassword};Admin\n";
 if (!Directory.Exists("Osztalyok"))
 {
     Directory.CreateDirectory("Osztalyok");
@@ -13,7 +159,6 @@ if (!File.Exists("bejelentkezes.csv"))
     File.WriteAllText("bejelentkezes.csv", bejelentkezesfej);
     File.SetAttributes("bejelentkezes.csv", FileAttributes.Hidden);
 }
-
 
 Console.WriteLine("Kérem jelentkezzen be!");
 Console.WriteLine("-----------------");
@@ -31,7 +176,7 @@ foreach (string sor in sorok.Skip(1))
         continue;
     }
 
-    string[] reszek = sor.Split("|");
+    string[] reszek = sor.Split(";");
     if (reszek.Length == 3 && reszek[0] == username)
     {
         talalt = reszek;
@@ -67,6 +212,13 @@ else
             Console.Write("kérem a jelszót újra: ");
             jelszo = Console.ReadLine();
         }
+
+        if (i == 3)
+        {
+            Console.WriteLine("A program le fog állni!");
+            Thread.Sleep(2000);
+            return;
+        }
     }
 
     if (bejelentkezett)
@@ -74,93 +226,46 @@ else
         Console.WriteLine("Bejelentkezés sikeres");
     }
 }
-// to be modified
+
+
+//------------------------------------------------------------------------------
+
+
 while (true)
 {
     if (privilege.ToLower() == "admin")
-    { 
-        Console.WriteLine("0. Kilépés || 1. Hozzáadás || 2. Lékérés || 3. Módosítás ");
-        string input = Console.ReadLine();
+    {
         int choice;
-
         do
         {
-            Console.Write("");
-            input = Console.ReadLine();
-        }
-        while (!int.TryParse(input, out choice) || choice < 0 || choice > 3);
+            Console.WriteLine("0. Kilépés || 1. Hozzáadás || 2. Lekérés || 3. Módosítás");
 
-        if (choice == 1)
-        {
-            void Add()
+            string input;
+            do
             {
-                Console.WriteLine("0. Visszalépés || 1. Osztály || 2. Diák");
-                int input1 = int.Parse(Console.ReadLine());
+                Console.Write("Válassz (0-3): ");
+                input = Console.ReadLine();
+            } while (!int.TryParse(input, out choice) || choice < 0 || choice > 3);
 
-                if (input1 == 1)
-                {
-                    Console.Write("Osztály neve: ");
-                    string className = Console.ReadLine();
+            switch (choice)
+            {
+                case 0:
+                    Console.WriteLine("Viszontlátásra");
+                    Thread.Sleep(1000);
+                    return;
 
-                    Console.Write("Osztály osztályfőnöke: ");
-                    string formTeacher = Console.ReadLine();
+                case 1:
+                    Add();
+                    break;
 
-                    Console.Write("Szeretne most diákot is hozzáadni?: ");
-                    string addStudent = Console.ReadLine();
+                case 2:
+                    // Lékérés logic here
+                    break;
 
-                    
-                    if (addStudent.ToLower() == "igen")
-                    {
-                        Console.Write("Diákok száma: ");
-                        int amountOfStudents = int.Parse(Console.ReadLine());
-
-                        List<Student> students = new List<Student>();
-
-                        for (int i = 0; i < amountOfStudents; i++)
-                        {
-                            Console.Write($"Diák {i + 1} neve: ");
-                            string studentName = Console.ReadLine();
-                            Console.Write($"Diák {i + 1} azonosítója: ");
-                            string studentId = Console.ReadLine();
-                    
-                            Student student = new Student(studentId, studentName, "N/A", "N/A", "N/A", "N/A", "N/A");   
-                            students.Add(student);
-                        }
-
-                        SchoolClass schoolClass = new SchoolClass(className, formTeacher, students);  
-
-                        Directory.CreateDirectory($"Osztalyok/{className}");
-
-                        for (int i = 0; i < students.Count; i++)
-                        {
-                            string studentFilePath = $"Osztalyok/{className}/{students[i].Name}.txt";
-                            File.WriteAllText(studentFilePath, $"Név: {students[i].Name}\nAzonosító: {students[i].Id}\n" +
-                                $"Jegyek:\n " +
-                                $"Matek:{students[i].Math}\n " +
-                                $"Irodalom: {students[i].Litrature}\n " +
-                                $"Történelem: {students[i].History}\n " +
-                                $"Angol: {students[i].English}\n " +
-                                $"Nyelvtan: {students[i].Grammer}");
-                        }
-
-                    }
-                    else
-                    {
-                        List<Student> students = new List<Student>();
-
-                        SchoolClass schoolClass = new SchoolClass(className, formTeacher, students);
-
-                    }
-
-
-
-                    Directory.CreateDirectory($"Osztalyok/{className}");
-
-                }
-                Add();
+                case 3:
+                    // Módosítás logic here
+                    break;
             }
-           
-        }
+        } while (choice != 0);
     }
 }
-// ---------------
