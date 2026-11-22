@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Net;
 
 void Add()
 {
@@ -72,7 +73,7 @@ void Add()
                     foreach (Student s in students)
                     {
                         File.WriteAllText(
-                            $"Osztalyok/{className}/{s.Id}.txt",
+                            $"Osztalyok/{className}/{s.Id}.csv",
                             $"Név: {s.Name}\nAzonosító: {s.Id}\n"
                                 + $"Jegyek:\n"
                                 + $"Matek: {s.Math}\n"
@@ -110,7 +111,7 @@ void Add()
                     Console.Write($"Diák {i + 1} azonosítója: ");
                     string studentId = Console.ReadLine();
                     DateTime now = DateTime.Now;
-                    File.AppendAllText("bejelentkezes.csv", studentId + ";" + PasswordEncryption.HashPassword(studentName.Replace(" " , "") + now.ToString("yyyy"))+";Diak");
+                    File.AppendAllText("bejelentkezes.csv", studentId + ";" + PasswordEncryption.HashPassword(studentName.Replace(" " , "") + now.ToString("yyyy"))+";Diak\n");
                     Student student = new Student(
                         studentId,
                         studentName.Replace(" ","_"),
@@ -126,7 +127,7 @@ void Add()
                 foreach (Student s in students)
                 {
                     File.WriteAllText(
-                        $"Osztalyok/{whichClass}/{s.Id}.txt",
+                        $"Osztalyok/{whichClass}/{s.Id}.csv",
                         $"Név: {s.Name}\nAzonosító: {s.Id}\n"
                             + $"Jegyek:\n"
                             + $"Matek: {s.Math}\n"
@@ -160,7 +161,7 @@ void retrieve(string[] found)
             case 0:
                 return;
             case 1:
-                Console.Write("mit szeretne megtekinteni? 0. Visszalépés || 1. Jegy átlagának megtekintése || 2. Össz átlag megtekintése");
+                Console.WriteLine("mit szeretne megtekinteni? 0. Visszalépés || 1. Jegy átlagának megtekintése || 2. Össz átlag megtekintése");
                 int choice2;
                 string input2;
                 do
@@ -174,7 +175,7 @@ void retrieve(string[] found)
                     case 0:
                         return;
                     case 1:
-                        string[] jegyek = File.ReadAllLines(found[0]);
+                        string[] jegyek = File.ReadAllLines($@"C:\Users\Csanad\Documents\Git directories\CERKA_Elektronikus_naplo\CERKA\CERKA\bin\Debug\net10.0\Osztalyok\11.a\{found[0]}.csv");
                         jegyek.Skip(3);
                         int choice3;
                         string input3;
@@ -188,9 +189,9 @@ void retrieve(string[] found)
                         switch (choice3)
                         {
                             case 0:
-                                return;
+                                break;
                             case 1:
-                                Console.Write(jegyek[0]);
+                                Console.Write(jegyek);
                                 return;
                         }
                         return;
@@ -299,14 +300,15 @@ while (true)
         int choice;
         do
         {
-            Console.WriteLine("0. Kilépés || 1. Hozzáadás || 2. Lekérés || 3. Módosítás");
+            Console.WriteLine($"A jogosultsági kör:{privilege}");
+            Console.WriteLine("0. Kilépés || 1. Hozzáadás || 2. Módosítás");
 
             string input;
             do
             {
-                Console.Write("Válassz (0-3): ");
+                Console.Write("Válassz (0-2): ");
                 input = Console.ReadLine();
-            } while (!int.TryParse(input, out choice) || choice < 0 || choice > 3);
+            } while (!int.TryParse(input, out choice) || choice < 0 || choice > 2);
 
             switch (choice)
             {
@@ -320,13 +322,14 @@ while (true)
                     break;
 
                 case 2:
-                    retrieve(found);
-                    break;
-
-                case 3:
                     // Módosítás logic here
                     break;
             }
         } while (choice != 0);
+    }
+    if (privilege == "Diak")// ez nem fog kelleni mert bekerjuk ugy is a prevet de igazabol igy is jo
+    {
+        Console.WriteLine($"A jogosultsági kör:{privilege}");
+        retrieve(found);
     }
 }
