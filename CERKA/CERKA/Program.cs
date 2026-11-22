@@ -18,8 +18,8 @@ void Add()
     {
         case 1:
 
-            Console.Write("Osztály neve: ");
-            string className = Console.ReadLine();
+            Console.Write("Osztály neve (pl.: 11.a vagy 11.A): ");
+            string className = Console.ReadLine().ToLower();
 
             Console.Write("Osztály osztályfőnöke: ");
             string formTeacher = Console.ReadLine();
@@ -72,7 +72,7 @@ void Add()
                     foreach (Student s in students)
                     {
                         File.WriteAllText(
-                            $"Osztalyok/{className}/{s.Name}.txt",
+                            $"Osztalyok/{className}/{s.Id}.txt",
                             $"Név: {s.Name}\nAzonosító: {s.Id}\n"
                                 + $"Jegyek:\n"
                                 + $"Matek: {s.Math}\n"
@@ -91,7 +91,12 @@ void Add()
             Console.Write("Melyik osztály: ");
             string whichClass = Console.ReadLine();
 
-            Console.Write("Diákok száma: ");
+            if (!Directory.Exists(whichClass.ToLower()))
+            {
+                Directory.CreateDirectory($"Osztalyok/{whichClass}");
+            }
+
+                Console.Write("Diákok száma: ");
             int amountOfStudents = int.Parse(Console.ReadLine());
 
             if (Directory.Exists($"Osztalyok/{whichClass}"))
@@ -104,10 +109,11 @@ void Add()
                     string studentName = Console.ReadLine();
                     Console.Write($"Diák {i + 1} azonosítója: ");
                     string studentId = Console.ReadLine();
-
+                    DateTime now = DateTime.Now;
+                    File.AppendAllText("bejelentkezes.csv", studentId + ";" + PasswordEncryption.HashPassword(studentName.Replace(" " , "") + now.ToString("yyyy"))+";Diak");
                     Student student = new Student(
                         studentId,
-                        studentName,
+                        studentName.Replace(" ","_"),
                         "N/A",
                         "N/A",
                         "N/A",
@@ -120,7 +126,7 @@ void Add()
                 foreach (Student s in students)
                 {
                     File.WriteAllText(
-                        $"Osztalyok/{whichClass}/{s.Name}.txt",
+                        $"Osztalyok/{whichClass}/{s.Id}.txt",
                         $"Név: {s.Name}\nAzonosító: {s.Id}\n"
                             + $"Jegyek:\n"
                             + $"Matek: {s.Math}\n"
@@ -136,9 +142,63 @@ void Add()
 }
 
 // Itt csinald meg a lekérést. - Levi
-void retrieve()
+void retrieve(string[] found)
 {
+    if (found[2] == "Diak")
+    {
+        Console.Write("mit szeretne kiiratni? 0. Kilépés || 1. Átlag megtekintése || 2. Jegyek megtekintése");
+        int choice;
+        string input;
+        do
+        {
+            Console.Write("Válassz (0-2): ");
+            input = Console.ReadLine();
 
+        } while (!int.TryParse(input, out choice) || choice < 0 || choice > 2);
+        switch (choice)
+        {
+            case 0:
+                return;
+            case 1:
+                Console.Write("mit szeretne megtekinteni? 0. Visszalépés || 1. Jegy átlagának megtekintése || 2. Össz átlag megtekintése");
+                int choice2;
+                string input2;
+                do
+                {
+                    Console.Write("Válassz (0-2): ");
+                    input2 = Console.ReadLine();
+
+                } while (!int.TryParse(input2, out choice2) || choice2 < 0 || choice2 > 2);
+                switch (choice2)
+                {
+                    case 0:
+                        return;
+                    case 1:
+                        string[] jegyek = File.ReadAllLines(found[0]);
+                        jegyek.Skip(3);
+                        int choice3;
+                        string input3;
+                        Console.Write("Melyik tantárgy? 0. Visszalépés || 1. Matek || 2. Irodalom || 3. Történelem || 4. Angol || 5. Nyelvtan");
+                        do
+                        {
+                            Console.Write("Válassz (0-5): ");
+                            input3 = Console.ReadLine();
+
+                        } while (!int.TryParse(input3, out choice3) || choice3 < 0 || choice3 > 5);
+                        switch (choice3)
+                        {
+                            case 0:
+                                return;
+                            case 1:
+                                Console.Write(jegyek[0]);
+                                return;
+                        }
+                        return;
+
+                }
+                return;
+        }
+    }
 }
 
 
@@ -165,44 +225,45 @@ Console.WriteLine("-----------------");
 Console.Write("Felhasználónév: ");
 string username = Console.ReadLine();
 
-string[] sorok = File.ReadAllLines("bejelentkezes.csv");
+string[] rows = File.ReadAllLines("bejelentkezes.csv");
 
-string[] talalt = null;
+string[] found = null;
 
-foreach (string sor in sorok.Skip(1))
+foreach (string row in rows.Skip(1))
 {
-    if (string.IsNullOrWhiteSpace(sor))
+    if (string.IsNullOrWhiteSpace(row))
     {
         continue;
     }
 
-    string[] reszek = sor.Split(";");
-    if (reszek.Length == 3 && reszek[0] == username)
+    string[] parts = row.Split(";");
+    if (parts[0] == username)
     {
-        talalt = reszek;
+        found = parts;
         break;
     }
 }
 
-string privilege = "user";
+string privilege = "Diak";
 
-if (talalt == null)
+if (found == null)
 {
     Console.WriteLine("Nincs ilyen felhasználó!");
+    Thread.Sleep(2000);
+    return;
 }
 else
 {
     Console.Write("Jelszó: ");
-    string jelszo = Console.ReadLine();
+    string password = Console.ReadLine();
     Console.WriteLine("-----------------");
-    bool bejelentkezett = false;
-    byte muvelet = 1;
+    bool logedin = false;
     for (int i = 1; i <= 3; i++)
     {
-        if (PasswordEncryption.VerifyPassword(jelszo, talalt[1]))
+        if (PasswordEncryption.VerifyPassword(password, found[1]))
         {
-            bejelentkezett = true;
-            privilege = talalt[2];
+            logedin = true;
+            privilege = found[2];
             break;
         }
 
@@ -210,7 +271,7 @@ else
         if (i < 3)
         {
             Console.Write("kérem a jelszót újra: ");
-            jelszo = Console.ReadLine();
+            password = Console.ReadLine();
         }
 
         if (i == 3)
@@ -221,7 +282,7 @@ else
         }
     }
 
-    if (bejelentkezett)
+    if (logedin)
     {
         Console.WriteLine("Bejelentkezés sikeres");
     }
@@ -233,7 +294,7 @@ else
 
 while (true)
 {
-    if (privilege.ToLower() == "admin")
+    if (privilege == "Admin")// ez nem fog kelleni mert bekerjuk ugy is a prevet
     {
         int choice;
         do
@@ -259,7 +320,7 @@ while (true)
                     break;
 
                 case 2:
-                    // Lékérés logic here
+                    retrieve(found);
                     break;
 
                 case 3:
