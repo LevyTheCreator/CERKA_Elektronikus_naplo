@@ -36,7 +36,7 @@ void Add()
 
                     SchoolClass schoolClass = new SchoolClass(className, formTeacher, students);
 
-                    Directory.CreateDirectory($"Osztalyok/{className}");
+                    Directory.CreateDirectory($"Osztalyok/{className.ToLower()}");
 
                     break;
 
@@ -68,19 +68,19 @@ void Add()
 
                     schoolClass = new SchoolClass(className, formTeacher, students);
 
-                    Directory.CreateDirectory($"Osztalyok/{className}");
+                    Directory.CreateDirectory($"Osztalyok/{className.ToLower()}");
 
                     foreach (Student s in students)
                     {
                         File.WriteAllText(
-                            $"Osztalyok/{className}/{s.Id}.csv",
+                            $"Osztalyok/{className.ToLower()}/{s.Id}.csv",
                             $"Név: {s.Name}\nAzonosító: {s.Id}\n"
                                 + $"Jegyek:\n"
                                 + $"Matek: {s.Math}\n"
                                 + $"Irodalom: {s.Litrature}\n"
                                 + $"Történelem: {s.History}\n"
                                 + $"Angol: {s.English}\n"
-                                + $"Nyelvtan: {s.Grammer}"
+                                + $"Nyelvtan: {s.Grammer}",System.Text.Encoding.UTF8
                         );
                     }
                     break;
@@ -94,7 +94,7 @@ void Add()
 
             if (!Directory.Exists(whichClass.ToLower()))
             {
-                Directory.CreateDirectory($"Osztalyok/{whichClass}");
+                Directory.CreateDirectory($"Osztalyok/{whichClass.ToLower()}");
             }
 
                 Console.Write("Diákok száma: ");
@@ -111,7 +111,7 @@ void Add()
                     Console.Write($"Diák {i + 1} azonosítója: ");
                     string studentId = Console.ReadLine();
                     DateTime now = DateTime.Now;
-                    File.AppendAllText("bejelentkezes.csv", studentId + ";" + PasswordEncryption.HashPassword(studentName.Replace(" " , "") + now.ToString("yyyy"))+";Diak\n");
+                    File.AppendAllText("bejelentkezes.csv", studentId + ";" + PasswordEncryption.HashPassword(studentName.Replace(" " , "") + now.ToString("yyyy"))+";Diak;" + whichClass.ToLower() + "\n");
                     Student student = new Student(
                         studentId,
                         studentName.Replace(" ","_"),
@@ -175,8 +175,7 @@ void retrieve(string[] found)
                     case 0:
                         return;
                     case 1:
-                        string[] jegyek = File.ReadAllLines($@"C:\Users\Csanad\Documents\Git directories\CERKA_Elektronikus_naplo\CERKA\CERKA\bin\Debug\net10.0\Osztalyok\11.a\{found[0]}.csv");
-                        jegyek.Skip(3);
+                        string[] jegyek = File.ReadAllLines($"Osztalyok/{found[^1]}/{found[0]}.txt").Skip(2).ToArray();
                         int choice3;
                         string input3;
                         Console.Write("Melyik tantárgy? 0. Visszalépés || 1. Matek || 2. Irodalom || 3. Történelem || 4. Angol || 5. Nyelvtan");
@@ -191,7 +190,10 @@ void retrieve(string[] found)
                             case 0:
                                 break;
                             case 1:
-                                Console.Write(jegyek);
+                                foreach (string sor in jegyek)
+                                {
+                                    Console.WriteLine(sor);
+                                }
                                 return;
                         }
                         return;
