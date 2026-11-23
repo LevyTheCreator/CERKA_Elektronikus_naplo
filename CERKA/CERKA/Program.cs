@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Net;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 void Add()
 {
@@ -149,15 +150,15 @@ void retrieve(string[] found)
 {
     if (found[2] == "Diak")
     {
-        Console.WriteLine("mit szeretne kiiratni? 0. Kilépés || 1. Átlag megtekintése || 2. Jegyek megtekintése");
+        Console.WriteLine("mit szeretne kiiratni? 0. Kilépés || 1. Átlag megtekintése || 2. Jegyek megtekintése || 3. Jelszó módosítása");
         int choice;
         string input;
         do
         {
-            Console.Write("Válassz (0-2): ");
+            Console.Write("Válassz (0-3): ");
             input = Console.ReadLine();
 
-        } while (!int.TryParse(input, out choice) || choice < 0 || choice > 2);
+        } while (!int.TryParse(input, out choice) || choice < 0 || choice > 3);
         switch (choice)
         {
             case 0:
@@ -176,7 +177,7 @@ void retrieve(string[] found)
                     input2 = Console.ReadLine();
 
                 } while (!int.TryParse(input2, out choice2) || choice2 < 0 || choice2 > 2);
-                
+
                 string[] grades = File.ReadAllLines($"Osztalyok/{found[^1]}/{found[0]}.csv").Skip(3).ToArray();
                 switch (choice2)
                 {
@@ -190,7 +191,7 @@ void retrieve(string[] found)
                             Console.Write("Válassz (0-5): ");
                             input2 = Console.ReadLine();
 
-                        } while (!int.TryParse(input2, out choice2) || choice2 < 0 || choice2 > 5);   
+                        } while (!int.TryParse(input2, out choice2) || choice2 < 0 || choice2 > 5);
 
                         string gpaCalculator(string subject)
                         {
@@ -216,7 +217,7 @@ void retrieve(string[] found)
                                 else
                                 {
                                     continue;
-                                }     
+                                }
                             }
                             return $"Nem található ilyen tantárgy: {subject}";
                         }
@@ -248,7 +249,7 @@ void retrieve(string[] found)
                         foreach (string line in grades)
                         {
                             string[] subjectAndGrades = line.Split(":");
-        
+
                             if (subjectAndGrades[1] == "N/A")
                             {
                                 continue;
@@ -300,6 +301,46 @@ void retrieve(string[] found)
                             Console.WriteLine(line);
                         }
                         return;
+                }
+                return;
+            case 3:
+                Console.WriteLine("Jelszó megváltoztatása");
+                Console.Write("Régi jelszó: ");
+                string oldpassword = Console.ReadLine();
+                Console.Write("Új jelszó: ");
+                string newpassword = Console.ReadLine();
+                Console.Write("Új jelszó még egyszer: ");
+                string newpassword2 = Console.ReadLine();
+                if (PasswordEncryption.VerifyPassword(oldpassword, found[1]))
+                {
+                    if (newpassword != newpassword2)
+                    {
+                        Console.WriteLine("A jelszavak nem eggyeznek!!");
+                    }
+                    else
+                    {
+                        string newhash = PasswordEncryption.HashPassword(newpassword);
+                        found[1] = newhash;
+                        string[] userlines = File.ReadAllLines("bejelentkezes.csv");
+                        for (int i = 0; i < userlines.Length; i++)
+                        {
+                            string[] userparts = userlines[i].Split(";");
+                            if (userparts[0] == found[0])
+                            {
+                                userparts[1] = newhash;
+                                userlines[i] = string.Join(";", userparts);
+                                break;
+                            }
+                        }
+                        File.SetAttributes("bejelentkezes.csv", File.GetAttributes("bejelentkezes.csv") & ~FileAttributes.Hidden);
+                        File.WriteAllLines("bejelentkezes.csv", userlines);
+                        File.SetAttributes("bejelentkezes.csv", File.GetAttributes("bejelentkezes.csv") | FileAttributes.Hidden);
+                        Console.WriteLine("A jelszó frissítve lett");
+                    }
+                } 
+                else
+                {
+                    Console.Write("Nem helyes a régi jelszó!!");
                 }
                 return;
         }
