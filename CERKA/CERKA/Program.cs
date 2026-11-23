@@ -174,30 +174,42 @@ void retrieve(string[] found)
                 {
                     case 0:
                         return;
-                    case 1:
-                        string[] jegyek = File.ReadAllLines($"Osztalyok/{found[^1]}/{found[0]}.txt").Skip(2).ToArray();
-                        int choice3;
-                        string input3;
-                        Console.Write("Melyik tantárgy? 0. Visszalépés || 1. Matek || 2. Irodalom || 3. Történelem || 4. Angol || 5. Nyelvtan");
-                        do
-                        {
-                            Console.Write("Válassz (0-5): ");
-                            input3 = Console.ReadLine();
+                }
+                return;
+            case 2:
+                string[] jegyek = File.ReadAllLines($"Osztalyok/{found[^1]}/{found[0]}.txt").Skip(2).ToArray();
+                int choice2;
+                string input2;
+                Console.WriteLine("Melyik tantárgy? 0. Visszalépés || 1. Matek || 2. Irodalom || 3. Történelem || 4. Angol || 5. Nyelvtan || 6. Összes");
+                List<string> sorok = new List<string>();
+                foreach (string sor in jegyek)
+                {
+                    sorok.Add(sor);
+                }
+                do
+                {
+                    Console.Write("Válassz (0-6): ");
+                    input2 = Console.ReadLine();
 
-                        } while (!int.TryParse(input3, out choice3) || choice3 < 0 || choice3 > 5);
-                        switch (choice3)
+                } while (!int.TryParse(input2, out choice2) || choice2 < 0 || choice2 > 6);
+                switch (choice2)
+                {
+
+                    case 0:
+                        break;
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                        Console.WriteLine(sorok[choice2]);
+                        return;
+                    case 6:
+                        foreach (string sor in jegyek)
                         {
-                            case 0:
-                                break;
-                            case 1:
-                                foreach (string sor in jegyek)
-                                {
-                                    Console.WriteLine(sor);
-                                }
-                                return;
+                            Console.WriteLine(sor);
                         }
                         return;
-
                 }
                 return;
         }
