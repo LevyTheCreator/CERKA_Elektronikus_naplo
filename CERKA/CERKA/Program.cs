@@ -76,7 +76,7 @@ void Add()
                     foreach (Student s in students)
                     {
                         File.WriteAllText(
-                            $"Osztalyok/{className.ToLower()}/{s.Id}.csv",
+                            $"Osztalyok/{className.ToLower()}/{s.Id}.txt",
                             $"Név: {s.Name}\nAzonosító: {s.Id}\n"
                                 + $"Jegyek:\n"
                                 + $"Matek: {s.Math}\n"
@@ -130,7 +130,7 @@ void Add()
                 foreach (Student s in students)
                 {
                     File.WriteAllText(
-                        $"Osztalyok/{whichClass}/{s.Id}.csv",
+                        $"Osztalyok/{whichClass}/{s.Id}.txt",
                         $"Név: {s.Name}\nAzonosító: {s.Id}\n"
                             + $"Jegyek:\n"
                             + $"Matek: {s.Math}\n"
@@ -269,7 +269,7 @@ void retrieve(string[] found)
                 return;
 
             case 2:
-                grades = File.ReadAllLines($"Osztalyok/{found[^1]}/{found[0]}.csv").Skip(2).ToArray();
+                grades = File.ReadAllLines($"Osztalyok/{found[^1]}/{found[0]}.txt").Skip(2).ToArray();
                 Console.WriteLine("Melyik tantárgy? 0. Visszalépés || 1. Matek || 2. Irodalom || 3. Történelem || 4. Angol || 5. Nyelvtan || 6. Összes");
                 List<string> lines = new List<string>();
                 foreach (string line in grades)
