@@ -1,9 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Net;
-using System.Linq;
-using System.Runtime.CompilerServices;
-
+﻿
 void Add()
 {
     Console.WriteLine("0. Visszalépés || 1. Osztály || 2. Diák");
@@ -30,7 +25,7 @@ void Add()
             Console.Write("Szeretne most diákot is hozzáadni?(0 - nem | 1 - igen): ");
             int addStudent = int.Parse(Console.ReadLine());
 
-            switch(addStudent)
+            switch (addStudent)
             {
                 case 0:
 
@@ -84,11 +79,11 @@ void Add()
                                 + $"Irodalom: {s.Litrature}\n"
                                 + $"Történelem: {s.History}\n"
                                 + $"Angol: {s.English}\n"
-                                + $"Nyelvtan: {s.Grammer}",System.Text.Encoding.UTF8
+                                + $"Nyelvtan: {s.Grammer}", System.Text.Encoding.UTF8
                         );
                     }
                     break;
-            }       
+            }
             break;
 
         case 2:
@@ -101,7 +96,7 @@ void Add()
                 Directory.CreateDirectory($"Osztalyok/{whichClass.ToLower()}");
             }
 
-                Console.Write("Diákok száma: ");
+            Console.Write("Diákok száma: ");
             int amountOfStudents = int.Parse(Console.ReadLine());
 
             if (Directory.Exists($"Osztalyok/{whichClass}"))
@@ -115,10 +110,10 @@ void Add()
                     Console.Write($"Diák {i + 1} azonosítója: ");
                     string studentId = Console.ReadLine();
                     DateTime now = DateTime.Now;
-                    File.AppendAllText("bejelentkezes.csv", studentId + ";" + PasswordEncryption.HashPassword(studentName.Replace(" " , "") + now.ToString("yyyy"))+";Diak;" + whichClass.ToLower() + "\n");
+                    File.AppendAllText("bejelentkezes.csv", studentId + ";" + PasswordEncryption.HashPassword(studentName.Replace(" ", "") + now.ToString("yyyy")) + ";Diak;" + whichClass.ToLower() + "\n");
                     Student student = new Student(
                         studentId,
-                        studentName.Replace(" ","_"),
+                        studentName.Replace(" ", "_"),
                         "N/A",
                         "N/A",
                         "N/A",
@@ -146,208 +141,189 @@ void Add()
     }
 }
 
-void retrieve(string[] found)
+void passwordchange(string[] found)
 {
-    if (found[2] == "Diak")
+    Console.WriteLine("Jelszó megváltoztatása");
+    Console.Write("Régi jelszó: ");
+    string oldpassword = Console.ReadLine();
+    Console.Write("Új jelszó: ");
+    string newpassword = Console.ReadLine();
+    Console.Write("Új jelszó még egyszer: ");
+    string newpassword2 = Console.ReadLine();
+    if (PasswordEncryption.VerifyPassword(oldpassword, found[1]))
     {
-        Console.WriteLine("mit szeretne kiiratni? 0. Kilépés || 1. Átlag megtekintése || 2. Jegyek megtekintése || 3. Jelszó módosítása");
-        int choice;
-        string input;
-        do
+        if (newpassword != newpassword2)
         {
-            Console.Write("Válassz (0-3): ");
-            input = Console.ReadLine();
-
-        } while (!int.TryParse(input, out choice) || choice < 0 || choice > 3);
-        switch (choice)
+            Console.WriteLine("A jelszavak nem eggyeznek!!");
+        }
+        else
         {
-            case 0:
-                Console.WriteLine("Viszontlátásra");
-                Thread.Sleep(1000);
-                Environment.Exit(0);
-                break;
-
-            case 1:
-                Console.WriteLine("Mit szeretne megtekinteni? 0. Visszalépés || 1. Jegy átlagának megtekintése || 2. Össz átlag megtekintése");
-                int choice2;
-                string input2;
-                do
+            string newhash = PasswordEncryption.HashPassword(newpassword);
+            found[1] = newhash;
+            string[] userlines = File.ReadAllLines("bejelentkezes.csv");
+            for (int i = 0; i < userlines.Length; i++)
+            {
+                string[] userparts = userlines[i].Split(";");
+                if (userparts[0] == found[0])
                 {
-                    Console.Write("Válassz (0-2): ");
-                    input2 = Console.ReadLine();
-
-                } while (!int.TryParse(input2, out choice2) || choice2 < 0 || choice2 > 2);
-
-                string[] grades = File.ReadAllLines($"Osztalyok/{found[^1]}/{found[0]}.csv").Skip(3).ToArray();
-                switch (choice2)
-                {
-                    case 0:
-                        return;
-
-                    case 1:
-                        Console.WriteLine("Melyik tantárgy? 0. Visszalépés || 1. Matek || 2. Irodalom || 3. Történelem || 4. Angol || 5. Nyelvtan");
-                        do
-                        {
-                            Console.Write("Válassz (0-5): ");
-                            input2 = Console.ReadLine();
-
-                        } while (!int.TryParse(input2, out choice2) || choice2 < 0 || choice2 > 5);
-
-                        string gpaCalculator(string subject)
-                        {
-                            foreach (string line in grades)
-                            {
-                                string[] subjectAndGrades = line.Split(":");
-
-                                if (subjectAndGrades[0] == subject)
-                                {
-                                    if (subjectAndGrades[1] == "N/A")
-                                    {
-                                        return "Nincs még jegye ebből a tantárgyból, ezért nincs átlaga";
-                                    }
-                                    else
-                                    {
-                                        string[] gradesSplit = subjectAndGrades[1].Split(";");
-                                        List<int> ints = gradesSplit.Select(int.Parse).ToList();
-
-                                        double gpa = ints.Average();
-                                        return $"{subject} átlága: {gpa}";
-                                    }
-                                }
-                                else
-                                {
-                                    continue;
-                                }
-                            }
-                            return $"Nem található ilyen tantárgy: {subject}";
-                        }
-
-                        switch (choice2)
-                        {
-                            case 0:
-                                break;
-                            case 1:
-                                Console.WriteLine(gpaCalculator("Matek"));
-                                break;
-                            case 2:
-                                Console.WriteLine(gpaCalculator("Irodalom"));
-                                break;
-                            case 3:
-                                Console.WriteLine(gpaCalculator("Történelem"));
-                                break;
-                            case 4:
-                                Console.WriteLine(gpaCalculator("Angol"));
-                                break;
-                            case 5:
-                                Console.WriteLine(gpaCalculator("Nyelvtan"));
-                                break;
-                        }
-                        break;
-
-                    case 2:
-                        List<double> gpas = new List<double>();
-                        foreach (string line in grades)
-                        {
-                            string[] subjectAndGrades = line.Split(":");
-
-                            if (subjectAndGrades[1] == "N/A")
-                            {
-                                continue;
-                            }
-                            else
-                            {
-                                string[] gradesSplit = subjectAndGrades[1].Split(";");
-                                List<int> ints = gradesSplit.Select(int.Parse).ToList();
-
-                                double gpa = ints.Average();
-                                gpas.Add(gpa);
-                            }
-                        }
-                        double gpaAll = gpas.Average();
-                        Console.WriteLine($"Az össz átlaga: {gpaAll}");
-                        return;
+                    userparts[1] = newhash;
+                    userlines[i] = string.Join(";", userparts);
+                    break;
                 }
-                return;
+            }
+            File.SetAttributes("bejelentkezes.csv", File.GetAttributes("bejelentkezes.csv") & ~FileAttributes.Hidden);
+            File.WriteAllLines("bejelentkezes.csv", userlines);
+            File.SetAttributes("bejelentkezes.csv", File.GetAttributes("bejelentkezes.csv") | FileAttributes.Hidden);
+            Console.WriteLine("A jelszó frissítve lett");
+        }
+    }
+    else
+    {
+        Console.Write("Nem helyes a régi jelszó!!");
+    }
+    return;
+}
+void viewgpa(string[] found)
+{
+    Console.WriteLine("Mit szeretne megtekinteni? 0. Visszalépés || 1. Jegy átlagának megtekintése || 2. Össz átlag megtekintése");
+    int choice2;
+    string input2;
+    do
+    {
+        Console.Write("Válassz (0-2): ");
+        input2 = Console.ReadLine();
 
-            case 2:
-                grades = File.ReadAllLines($"Osztalyok/{found[^1]}/{found[0]}.txt").Skip(2).ToArray();
-                Console.WriteLine("Melyik tantárgy? 0. Visszalépés || 1. Matek || 2. Irodalom || 3. Történelem || 4. Angol || 5. Nyelvtan || 6. Összes");
-                List<string> lines = new List<string>();
+    } while (!int.TryParse(input2, out choice2) || choice2 < 0 || choice2 > 2);
+
+    string[] grades = File.ReadAllLines($"Osztalyok/{found[^1]}/{found[0]}.csv").Skip(3).ToArray();
+    switch (choice2)
+    {
+        case 0:
+            return;
+
+        case 1:
+            Console.WriteLine("Melyik tantárgy? 0. Visszalépés || 1. Matek || 2. Irodalom || 3. Történelem || 4. Angol || 5. Nyelvtan");
+            do
+            {
+                Console.Write("Válassz (0-5): ");
+                input2 = Console.ReadLine();
+
+            } while (!int.TryParse(input2, out choice2) || choice2 < 0 || choice2 > 5);
+
+            string gpaCalculator(string subject)
+            {
                 foreach (string line in grades)
                 {
-                    lines.Add(line);
-                }
-                do
-                {
-                    Console.Write("Válassz (0-6): ");
-                    input2 = Console.ReadLine();
+                    string[] subjectAndGrades = line.Split(":");
 
-                } while (!int.TryParse(input2, out choice2) || choice2 < 0 || choice2 > 6);
-                switch (choice2)
-                {
-
-                    case 0:
-                        break;
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                    case 5:
-                        Console.WriteLine(lines[choice2]);
-                        return;
-                    case 6:
-                        foreach (string line in grades)
-                        {
-                            Console.WriteLine(line);
-                        }
-                        return;
-                }
-                return;
-            case 3:
-                Console.WriteLine("Jelszó megváltoztatása");
-                Console.Write("Régi jelszó: ");
-                string oldpassword = Console.ReadLine();
-                Console.Write("Új jelszó: ");
-                string newpassword = Console.ReadLine();
-                Console.Write("Új jelszó még egyszer: ");
-                string newpassword2 = Console.ReadLine();
-                if (PasswordEncryption.VerifyPassword(oldpassword, found[1]))
-                {
-                    if (newpassword != newpassword2)
+                    if (subjectAndGrades[0] == subject)
                     {
-                        Console.WriteLine("A jelszavak nem eggyeznek!!");
+                        if (subjectAndGrades[1] == "N/A")
+                        {
+                            return "Nincs még jegye ebből a tantárgyból, ezért nincs átlaga";
+                        }
+                        else
+                        {
+                            string[] gradesSplit = subjectAndGrades[1].Split(";");
+                            List<int> ints = gradesSplit.Select(int.Parse).ToList();
+
+                            double gpa = ints.Average();
+                            return $"{subject} átlága: {gpa}";
+                        }
                     }
                     else
                     {
-                        string newhash = PasswordEncryption.HashPassword(newpassword);
-                        found[1] = newhash;
-                        string[] userlines = File.ReadAllLines("bejelentkezes.csv");
-                        for (int i = 0; i < userlines.Length; i++)
-                        {
-                            string[] userparts = userlines[i].Split(";");
-                            if (userparts[0] == found[0])
-                            {
-                                userparts[1] = newhash;
-                                userlines[i] = string.Join(";", userparts);
-                                break;
-                            }
-                        }
-                        File.SetAttributes("bejelentkezes.csv", File.GetAttributes("bejelentkezes.csv") & ~FileAttributes.Hidden);
-                        File.WriteAllLines("bejelentkezes.csv", userlines);
-                        File.SetAttributes("bejelentkezes.csv", File.GetAttributes("bejelentkezes.csv") | FileAttributes.Hidden);
-                        Console.WriteLine("A jelszó frissítve lett");
+                        continue;
                     }
-                } 
+                }
+                return $"Nem található ilyen tantárgy: {subject}";
+            }
+
+            switch (choice2)
+            {
+                case 0:
+                    break;
+                case 1:
+                    Console.WriteLine(gpaCalculator("Matek"));
+                    break;
+                case 2:
+                    Console.WriteLine(gpaCalculator("Irodalom"));
+                    break;
+                case 3:
+                    Console.WriteLine(gpaCalculator("Történelem"));
+                    break;
+                case 4:
+                    Console.WriteLine(gpaCalculator("Angol"));
+                    break;
+                case 5:
+                    Console.WriteLine(gpaCalculator("Nyelvtan"));
+                    break;
+            }
+            break;
+        case 2:
+            List<double> gpas = new List<double>();
+            foreach (string line in grades)
+            {
+                string[] subjectAndGrades = line.Split(":");
+
+                if (subjectAndGrades[1] == "N/A")
+                {
+                    continue;
+                }
                 else
                 {
-                    Console.Write("Nem helyes a régi jelszó!!");
+                    string[] gradesSplit = subjectAndGrades[1].Split(";");
+                    List<int> ints = gradesSplit.Select(int.Parse).ToList();
+
+                    double gpa = ints.Average();
+                    gpas.Add(gpa);
                 }
-                return;
-        }
+            }
+            double gpaAll = gpas.Average();
+            Console.WriteLine($"Az össz átlaga: {gpaAll}");
+            return;
+    }
+    return;
+
+}
+void viewgrades(string[] found)
+{
+    string input2;
+    int choice2;
+    string[] grades = File.ReadAllLines($"Osztalyok/{found[^1]}/{found[0]}.txt").Skip(2).ToArray();
+    Console.WriteLine("Melyik tantárgy? 0. Visszalépés || 1. Matek || 2. Irodalom || 3. Történelem || 4. Angol || 5. Nyelvtan || 6. Összes");
+    List<string> lines = new List<string>();
+    foreach (string line in grades)
+    {
+        lines.Add(line);
+    }
+    do
+    {
+
+        Console.Write("Válassz (0-6): ");
+        input2 = Console.ReadLine();
+
+    } while (!int.TryParse(input2, out choice2) || choice2 < 0 || choice2 > 6);
+    switch (choice2)
+    {
+
+        case 0:
+            break;
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+            Console.WriteLine(lines[choice2]);
+            return;
+        case 6:
+            foreach (string line in grades)
+            {
+                Console.WriteLine(line);
+            }
+            return;
     }
 }
-
-
 
 //------------------------------------------------------------------------------
 
@@ -466,13 +442,43 @@ while (true)
                     break;
 
                 case 2:
-                    // Módosítás logic here
+                    //modify() Módosítás logic here
                     break;
             }
         } while (choice != 0);
     }
     if (privilege == "Diak")// ez nem fog kelleni mert bekerjuk ugy is a prevet de igazabol igy is jo
     {
-        retrieve(found);
+        Console.WriteLine("mit szeretne tenni? 0. Kilépés || 1. Átlag megtekintése || 2. Jegyek megtekintése || 3. Jelszó módosítása");
+        int choice;
+        string input;
+        do
+        {
+            Console.Write("Válassz (0-3): ");
+            input = Console.ReadLine();
+
+        } while (!int.TryParse(input, out choice) || choice < 0 || choice > 3);
+        switch (choice)
+        {
+            case 0:
+                Console.WriteLine("Viszontlátásra");
+                Thread.Sleep(1000);
+                Environment.Exit(0);
+                break;
+
+            case 1:
+                viewgpa(found);
+                return;
+            case 2:
+                viewgrades(found);
+                return;
+            case 3:
+                passwordchange(found);
+                return;
+        }
+    }
+    if (privilege == "Tanár")// ez nem fog kelleni mert bekerjuk ugy is a prevet de igazabol igy is jo
+    {
+        ;
     }
 }
