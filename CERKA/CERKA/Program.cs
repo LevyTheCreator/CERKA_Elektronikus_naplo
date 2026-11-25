@@ -1,5 +1,5 @@
 ﻿
-void Add()
+void add()
 {
     Console.WriteLine("0. Visszalépés || 1. Osztály || 2. Diák");
 
@@ -183,6 +183,7 @@ void passwordchange(string[] found)
     }
     return;
 }
+
 void viewgpa(string[] found)
 {
     Console.WriteLine("Mit szeretne megtekinteni? 0. Visszalépés || 1. Jegy átlagának megtekintése || 2. Össz átlag megtekintése");
@@ -286,6 +287,7 @@ void viewgpa(string[] found)
     return;
 
 }
+
 void viewgrades(string[] found)
 {
     string input2;
@@ -322,6 +324,94 @@ void viewgrades(string[] found)
                 Console.WriteLine(line);
             }
             return;
+    }
+}
+
+void modify(string[] found)
+{
+    if (found[2] == "Admin")
+    {
+        Console.WriteLine("0. Visszalépés || 1. Azonosító változtatása || 2. Név változtatása");
+
+        int choice;
+        string input;
+        do
+        {
+            Console.Write("Válassz (0-2): ");
+            input = Console.ReadLine();
+
+        } while (!int.TryParse(input, out choice) || choice < 0 || choice > 2);
+
+        switch (choice)
+        {
+            case 0:
+                return;
+            case 1:
+                Console.Write("Diák osztálya (pl. 10.a): ");
+                string whichClass = Console.ReadLine();
+
+                Console.Write("Diák jelenlegi azonosítója: ");
+                string studentId = Console.ReadLine();
+
+                Console.Write("Diák új azonosítója: ");
+                string newStudentId = Console.ReadLine();
+
+                string[] studentFileLines = File.ReadAllLines($"Osztalyok/{whichClass}/{studentId}.csv");
+
+                for (int i = 0; i < studentFileLines.Length; i++)
+                {
+                    if (studentFileLines[i].StartsWith("Azonosító:"))
+                    {
+                        studentFileLines[i] = "Azonosító: " + newStudentId;
+                    }  
+                }
+
+                File.WriteAllLines($"Osztalyok/{whichClass}/{studentId}.csv", studentFileLines);
+                File.Move($"Osztalyok/{whichClass}/{studentId}.csv", $"Osztalyok/{whichClass}/{newStudentId}.csv");
+
+                string[] lines = File.ReadAllLines("bejelentkezes.csv");
+
+                for (int j = 0; j < lines.Length; j++)
+                {
+                    string[] contents = lines[j].Split(";");
+
+                    if (contents[0] == studentId)
+                    {
+                        lines[j] = $"{newStudentId};{contents[1]};{contents[2]};{contents[3]}";
+                    }
+                }
+
+                File.WriteAllLines("bejelentkezes.csv", lines);
+                break;
+
+            case 2:
+                Console.Write("Osztály (pl. 10.a): ");
+                whichClass = Console.ReadLine();
+
+                Console.Write("Diák jelenlegi azonosítója: ");
+                studentId = Console.ReadLine();
+
+                Console.Write("Diák új neve: ");
+                string newStudentName = Console.ReadLine();
+
+                studentFileLines = File.ReadAllLines($"Osztalyok/{whichClass}/{studentId}.csv");
+
+                for (int i = 0; i < studentFileLines.Length; i++)
+                {
+                    if (studentFileLines[i].StartsWith("Név:"))
+                    {
+                        studentFileLines[i] = "Név: " + newStudentName.Replace(" ", "_");
+                    }
+                }
+
+                File.WriteAllLines($"Osztalyok/{whichClass}/{studentId}.csv", studentFileLines);
+                break;
+        }
+    }
+
+    if (found[2] == "Tanár")
+    {
+
     }
 }
 
@@ -438,11 +528,11 @@ while (true)
                     return;
 
                 case 1:
-                    Add();
+                    add();
                     break;
 
                 case 2:
-                    //modify() Módosítás logic here
+                    modify(found);
                     break;
             }
         } while (choice != 0);
