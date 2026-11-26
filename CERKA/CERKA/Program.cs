@@ -1,4 +1,6 @@
 ﻿
+using System.Xml;
+
 void add()
 {
     Console.WriteLine("0. Visszalépés || 1. Osztály || 2. Diák");
@@ -21,6 +23,8 @@ void add()
 
             Console.Write("Osztály osztályfőnöke: ");
             string formTeacher = Console.ReadLine();
+            DateTime now = DateTime.Now;
+            File.AppendAllText("bejelentkezes.csv", formTeacher + ";" + PasswordEncryption.HashPassword(formTeacher.Replace(" ", "") + now.ToString("yyyy")) + ";Tanar;" + className.ToLower() + "\n");
 
             Console.Write("Szeretne most diákot is hozzáadni?(0 - nem | 1 - igen): ");
             int addStudent = int.Parse(Console.ReadLine());
@@ -50,7 +54,7 @@ void add()
                         string studentName = Console.ReadLine();
                         Console.Write($"Diák {i + 1} azonosítója: ");
                         string studentId = Console.ReadLine();
-                        DateTime now = DateTime.Now;
+                        now = DateTime.Now;
                         File.AppendAllText("bejelentkezes.csv", studentId + ";" + PasswordEncryption.HashPassword(studentName.Replace(" ", "") + now.ToString("yyyy")) + ";Diak;" + className.ToLower() + "\n");
 
                         Student student = new Student(
@@ -416,8 +420,11 @@ void modify(string[] found)
 }
 
 //------------------------------------------------------------------------------
-
-
+Console.ForegroundColor = ConsoleColor.DarkGreen;
+Console.WriteLine(" ▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄   ▄▄▄   ▄▄▄   ▄▄▄▄\r\n███▀▀▀▀▀ ███▀▀▀▀▀ ███▀▀███▄ ███ ▄███▀ ▄██▀▀██▄\r\n███      ███▄▄    ███▄▄███▀ ███████   ███  ███\r\n███      ███      ███▀▀██▄  ███▀███▄  ███▀▀███\r\n▀███████ ▀███████ ███  ▀███ ███  ▀███ ███  ███");
+Console.WriteLine("----------------------------------------------");
+Console.ResetColor();
+Console.WriteLine();
 string hashedAdminPassword = PasswordEncryption.HashPassword("Menojelszo21");
 string loginhead =
     "Username;Password;Privileges\n" + $"sysadmin;{hashedAdminPassword};Admin\n";
@@ -511,14 +518,14 @@ while (true)
         int choice;
         do
         {
-            Console.WriteLine("0. Kilépés || 1. Hozzáadás || 2. Módosítás");
+            Console.WriteLine("0. Kilépés || 1. Hozzáadás || 2. Módosítás || 3. Jelszó módosítása");
 
             string input;
             do
             {
-                Console.Write("Válassz (0-2): ");
+                Console.Write("Válassz (0-3): ");
                 input = Console.ReadLine();
-            } while (!int.TryParse(input, out choice) || choice < 0 || choice > 2);
+            } while (!int.TryParse(input, out choice) || choice < 0 || choice > 3);
 
             switch (choice)
             {
@@ -533,6 +540,10 @@ while (true)
 
                 case 2:
                     modify(found);
+                    break;
+
+                case 3:
+                    passwordchange(found);
                     break;
             }
         } while (choice != 0);
