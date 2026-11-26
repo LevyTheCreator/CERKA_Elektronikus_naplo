@@ -1,7 +1,7 @@
-<p align="center">
-  <img src="Pictur/cerka_icon.png" alt="CERKA" width="20%">
-  <img src="Pictur/cerka_wordmark.png" alt="CERKA" width="79%" style="position:relative;top:20px;left:-5px">
-</p>
+<div align="center" style="margin-top:0px">
+  <img src="Pictur/cerka_icon.png" alt="CERKA" width="20%" align="middle">
+  <img src="Pictur/cerka_wordmark.png" alt="CERKA" width="79%" style="position:relative;left:-20;bottom:10" align="middle">
+</div>
 
 # CERKA – Elektronikus Napló
 
