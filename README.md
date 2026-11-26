@@ -12,12 +12,14 @@ Konzolos elektronikus iskolai napló- és nyilvántartó alkalmazás <b>C#</b> n
 ## Főbb funkciók és működés
 
 ### 1. Beléptetés és jogosultságok
-* Felhasználókeresés a `bejelentkezes.csv` fájlban (<i>`;`</i> elválasztással) a megadott felhasználónév alapján.
+
+* Felhasználókeresés a `bejelentkezes.csv` fájlban (<i></i> elválasztással) a megadott felhasználónév alapján.
 * Jelszóellenőrzés a `PasswordEncryption.VerifyPassword` metódussal, legfeljebb **3 próbálkozással** (3. sikertelen próbánál a program leáll).
-* Jogosultsági szintek: <b>`Admin`</b> / <b>`Tanár`</b> / <b>`Diák`.</b>
+* Jogosultsági szintek: <b></b> / <b></b> / <b>.</b>
 * **Jelszóváltoztatás (`passwordchange`):** ellenőrzi a régi jelszót, bekéri és egyezteti az új jelszót kétszer, hash-eli (`PasswordEncryption.HashPassword`), frissíti a `bejelentkezes.csv` fájlt, közben ideiglenesen leveszi és visszateszi a `Hidden` fájlattribútumot.
 
 ### 2. Admin (`sysadmin`) funkciók
+
 * **Hozzáadás (`add`):**
   * **Új osztály (`1. Osztály`):** bekéri az osztály nevét (kisbetűsítve) és az osztályfőnök nevét, létrehozza a `SchoolClass` példányt és az `Osztalyok/<osztálynév>` mappát, valamint felveszi a tanárt a `bejelentkezes.csv`-be (`Tanar` szerepkörrel, `<NévSzóközNélkül><Év>` alapjelszó-hashhel). Rögzíthetőek diákok is (`0 - nem | 1 - igen`), létrehozva a `Student` objektumokat és a tanulói adatfájlokat (`N/A` kezdeti jegyekkel: `Matek`, `Irodalom`, `Történelem`, `Angol`, `Nyelvtan`).
   * **Új diák (`2. Diák`):** megadott osztályhoz vesz fel új diákokat (`Id`, `Name`), regisztrálja őket a `bejelentkezes.csv`-ben (`Diak` szerepkörrel, automatikusan generált kezdőjelszó-hashhel), és létrehozza a diák adatfájlját.
@@ -27,6 +29,7 @@ Konzolos elektronikus iskolai napló- és nyilvántartó alkalmazás <b>C#</b> n
 * **Jelszó módosítása (`passwordchange`):** saját jelszó cseréje.
 
 ### 3. Diák (`Diak`) funkciók
+
 * **Átlag megtekintése (`viewgpa`):**
   * **Tantárgyi átlag (`1`):** `Matek`, `Irodalom`, `Történelem`, `Angol` vagy `Nyelvtan` kiválasztása után `;`-vel elválasztott jegyekből számol átlagot (ha `N/A`, jelzi, hogy még nincs jegy).
   * **Összátlag (`2`):** a meglévő tantárgyi átlagok átlagát számolja ki.
@@ -60,3 +63,5 @@ git clone https://github.com/LevyTheCreator/CERKA_Elektronikus_naplo.git
 cd CERKA/CERKA
 dotnet restore
 dotnet run
+```
+* **Vagy** a ‘CERKA.exe’ file elindításával.
