@@ -113,7 +113,7 @@ void add()
                     string studentName = Console.ReadLine();
                     Console.Write($"Diák {i + 1} azonosítója: ");
                     string studentId = Console.ReadLine();
-                    DateTime now = DateTime.Now;
+                    now = DateTime.Now;
                     File.AppendAllText("bejelentkezes.csv", studentId + ";" + PasswordEncryption.HashPassword(studentName.Replace(" ", "") + now.ToString("yyyy")) + ";Diak;" + whichClass.ToLower() + "\n");
                     Student student = new Student(
                         studentId,
@@ -420,11 +420,6 @@ void modify(string[] found)
 }
 
 //------------------------------------------------------------------------------
-Console.ForegroundColor = ConsoleColor.DarkGreen;
-Console.WriteLine(" ▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄   ▄▄▄   ▄▄▄   ▄▄▄▄\r\n███▀▀▀▀▀ ███▀▀▀▀▀ ███▀▀███▄ ███ ▄███▀ ▄██▀▀██▄\r\n███      ███▄▄    ███▄▄███▀ ███████   ███  ███\r\n███      ███      ███▀▀██▄  ███▀███▄  ███▀▀███\r\n▀███████ ▀███████ ███  ▀███ ███  ▀███ ███  ███");
-Console.WriteLine("----------------------------------------------");
-Console.ResetColor();
-Console.WriteLine();
 string hashedAdminPassword = PasswordEncryption.HashPassword("Menojelszo21");
 string loginhead =
     "Username;Password;Privileges\n" + $"sysadmin;{hashedAdminPassword};Admin\n";
@@ -506,8 +501,12 @@ else
         Console.WriteLine("Bejelentkezés sikeres");
     }
 }
-
-
+Console.Clear();
+Console.ForegroundColor = ConsoleColor.DarkGreen;
+Console.WriteLine(" ▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄   ▄▄▄   ▄▄▄   ▄▄▄▄\r\n███▀▀▀▀▀ ███▀▀▀▀▀ ███▀▀███▄ ███ ▄███▀ ▄██▀▀██▄\r\n███      ███▄▄    ███▄▄███▀ ███████   ███  ███\r\n███      ███      ███▀▀██▄  ███▀███▄  ███▀▀███\r\n▀███████ ▀███████ ███  ▀███ ███  ▀███ ███  ███");
+Console.WriteLine("----------------------------------------------");
+Console.ResetColor();
+Console.WriteLine();
 //------------------------------------------------------------------------------
 
 Console.WriteLine($"A jogosultsági kör:{privilege}");// elég ha az elején kiírja
