@@ -175,9 +175,9 @@ void passwordchange(string[] found)
                     break;
                 }
             }
-            File.SetAttributes("bejelentkezes.csv", File.GetAttributes("bejelentkezes.csv") & ~FileAttributes.Hidden);
+            File.SetAttributes("bejelentkezes.csv", ~FileAttributes.Hidden);
             File.WriteAllLines("bejelentkezes.csv", userlines);
-            File.SetAttributes("bejelentkezes.csv", File.GetAttributes("bejelentkezes.csv") | FileAttributes.Hidden);
+            File.SetAttributes("bejelentkezes.csv", FileAttributes.Hidden);
             Console.WriteLine("A jelszó frissítve lett");
         }
     }
@@ -420,9 +420,7 @@ void modify(string[] found)
 }
 
 //------------------------------------------------------------------------------
-string hashedAdminPassword = PasswordEncryption.HashPassword("Menojelszo21");
-string loginhead =
-    "Username;Password;Privileges\n" + $"sysadmin;{hashedAdminPassword};Admin\n";
+
 if (!Directory.Exists("Osztalyok"))
 {
     Directory.CreateDirectory("Osztalyok");
@@ -430,6 +428,8 @@ if (!Directory.Exists("Osztalyok"))
 
 if (!File.Exists("bejelentkezes.csv"))
 {
+    string hashedAdminPassword = PasswordEncryption.HashPassword("Menojelszo21");
+    string loginhead = "Username;Password;Privileges\n" + $"sysadmin;{hashedAdminPassword};Admin\n";
     File.WriteAllText("bejelentkezes.csv", loginhead);
     File.SetAttributes("bejelentkezes.csv", FileAttributes.Hidden);
 }
@@ -547,7 +547,7 @@ while (true)
             }
         } while (choice != 0);
     }
-    if (privilege == "Diak")// ez nem fog kelleni mert bekerjuk ugy is a prevet de igazabol igy is jo
+    if (privilege == "Diak")
     {
         Console.WriteLine("mit szeretne tenni? 0. Kilépés || 1. Átlag megtekintése || 2. Jegyek megtekintése || 3. Jelszó módosítása");
         int choice;
@@ -577,7 +577,7 @@ while (true)
                 return;
         }
     }
-    if (privilege == "Tanár")// ez nem fog kelleni mert bekerjuk ugy is a prevet de igazabol igy is jo
+    if (privilege == "Tanár")
     {
         ;
     }
