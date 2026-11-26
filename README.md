@@ -1,6 +1,6 @@
 <p align="center">
   <img src="Pictur/cerka_icon.png" alt="CERKA" width="20%">
-  <img src="Pictur/cerka_wordmark.png" alt="CERKA" width="79%" style="position:relative;top:10px;left:-5px">
+  <img src="Pictur/cerka_wordmark.png" alt="CERKA" width="79%" style="position:relative;top:20px;left:-5px">
 </p>
 
 # CERKA – Elektronikus Napló
@@ -34,7 +34,11 @@ Konzolos elektronikus iskolai napló- és nyilvántartó alkalmazás <b>C#</b> n
 * **Jelszó módosítása (`passwordchange`):** saját jelszó cseréje.
 
 ### 4. Tanár (`Tanár` / `Tanar`) szerepkör
-* A jogosultsági ág és a `modify` alatti `Tanár` blokk előkészítve van, a részletes tanári műveletek további fejlesztés alatt állnak.
+
+* **Jegyek kezelése (`add`)** – új jegy rögzítése vagy meglévő jegy módosítása.
+* **Átlagok lekérdezése (`viewgpa`)** – tantárgyi vagy összesített átlag számítása.
+* **Jegyek lekérdezése (`viewgrades`)** – egy tantárgy jegyeinek vagy az összes jegy megjelenítése.
+* **Jelszó módosítása (`passwordchange`)** – a saját jelszó cseréje.
 
 ---
 
