@@ -15,7 +15,7 @@ Konzolos elektronikus iskolai napló- és nyilvántartó alkalmazás <b>C#</b> n
 
 * Felhasználókeresés a `bejelentkezes.csv` fájlban (<i></i> elválasztással) a megadott felhasználónév alapján.
 * Jelszóellenőrzés a `PasswordEncryption.VerifyPassword` metódussal, legfeljebb **3 próbálkozással** (3. sikertelen próbánál a program leáll).
-* Jogosultsági szintek: <b></b> / <b></b> / <b>.</b>
+* Jogosultsági szintek: <b>`Admin`</b> / <b>`Diák`</b> / <b>`Tanár`</b>.
 * **Jelszóváltoztatás (`passwordchange`):** ellenőrzi a régi jelszót, bekéri és egyezteti az új jelszót kétszer, hash-eli (`PasswordEncryption.HashPassword`), frissíti a `bejelentkezes.csv` fájlt, közben ideiglenesen leveszi és visszateszi a `Hidden` fájlattribútumot.
 
 ### 2. Admin (`sysadmin`) funkciók
@@ -63,5 +63,10 @@ git clone https://github.com/LevyTheCreator/CERKA_Elektronikus_naplo.git
 cd CERKA/CERKA
 dotnet restore
 dotnet run
+``` 
+**Vagy** 
+```bash
+git clone https://github.com/LevyTheCreator/CERKA_Elektronikus_naplo.git
 ```
-* **Vagy** a ‘CERKA.exe’ file elindításával.
+a <b>`CERKA_Elektronikus_naplo\CERKA`</b> mappában
+a <b>`CERKA.exe`</b> file elindításával.
